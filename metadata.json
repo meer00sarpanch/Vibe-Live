@@ -1,0 +1,6 @@
+{
+  "name": "Mehfil",
+  "description": "Mehfil — Luxury live streaming, voice party rooms, 30s short video studio, PK battles, social inbox, and Top 100 leaderboard.",
+  "requestFramePermissions": ["camera", "microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
