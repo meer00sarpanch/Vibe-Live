@@ -1,27 +1,49 @@
-name: Build APK
+name: Build Vibe-Live APK
+
 on:
   push:
     branches: [ main ]
+  workflow_dispatch:
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup Node
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node 20
         uses: actions/setup-node@v4
         with:
           node-version: 20
-      - name: Install and Build
-        run: |
-          npm install
-          npm run build
+          cache: npm
+
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Dependencies - FIXED
+        run: npm install --legacy-peer-deps
+
+      - name: Build Web App
+        run: npm run build
+
       - name: Build APK with Capacitor
         run: |
-          npx cap add android
-          npx cap sync
-          cd android && ./gradlew assembleDebug
-      - name: Upload APK
+          if [ ! -d "android" ]; then npx cap add android; fi
+          npx cap sync android
+          cd android
+          chmod +x gradlew
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Upload Vibe-Live APK
         uses: actions/upload-artifact@v4
         with:
-          name: Vibe-Live-APK
+          name: Vibe-Live-APK-v1.0
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
