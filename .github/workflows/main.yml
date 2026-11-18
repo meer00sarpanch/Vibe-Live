@@ -29,8 +29,12 @@ jobs:
       - name: Build Web App
         run: npm run build
 
+      - name: Install Capacitor
+        run: npm install @capacitor/core @capacitor/cli @capacitor/android --legacy-peer-deps
+
       - name: Build APK with Capacitor
         run: |
+          npx cap init Vibe-Live com.vibelive.app --web-dir=dist || true
           if [ ! -d "android" ]; then npx cap add android; fi
           npx cap sync android
           cd android
